@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Engine6.0 - Premium Gaming Modules</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+    }
+
+    body {
+      background: #000;
+      color: #f0f0f0;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    /* === VISIBLY IMPROVED GRID BACKGROUND === */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      background-image:
+        linear-gradient(rgba(200, 200, 240, 0.26) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(200, 200, 240, 0.26) 1px, transparent 1px);
+      background-size: 60px 60px;          /* smaller = more visible/detailed */
+      opacity: 0.65;                       /* stronger presence without being harsh */
+    }
+
+    /* Floating particles - unchanged */
+    .particles {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .particle {
+      position: absolute;
+      background: radial-gradient(circle at 40% 40%, #ffffff 0%, rgba(240,240,255,0.45) 50%, transparent 75%);
+      border-radius: 50%;
+      box-shadow: 
+        0 0 18px rgba(255,255,255,0.5),
+        inset 0 0 8px rgba(255,255,255,0.4);
+      animation: float linear infinite;
+      opacity: 0.3;
+    }
+
+    @keyframes float {
+      0%   { transform: translate(0, 0) scale(1); }
+      50%  { transform: translate(var(--dx), var(--dy)) scale(1.15); }
+      100% { transform: translate(var(--dx2), var(--dy2)) scale(1); }
+    }
+
+    /* Particle positions (shortened for brevity - add your full 20 if needed) */
+    .particle:nth-child(1)  { width: 5px; height: 5px; left: 10%; top: 15%; animation-duration: 48s; --dx: 140px; --dy: 200px; --dx2: -90px; --dy2: 160px; }
+    .particle:nth-child(2)  { width: 7px; height: 7px; left: 35%; top: 55%; animation-duration: 62s; --dx: -160px; --dy: 110px; --dx2: 100px; --dy2: -130px; }
+    /* ... add the rest as before */
+
+    /* Sidebar - unchanged from last version */
+    .sidebar {
+      position: fixed;
+      left: 32px;
+      top: 20px;
+      bottom: 20px;
+      width: 260px;
+      background: rgba(8, 8, 14, 0.88);
+      border-radius: 22px;
+      border: 1px solid rgba(200, 200, 240, 0.1);
+      box-shadow: 0 20px 70px rgba(0,0,0,0.85);
+      backdrop-filter: blur(18px);
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sidebar-header {
+      padding: 2rem 1.4rem 1.6rem;
+      text-align: center;
+      border-bottom: 1px solid rgba(200,200,240,0.06);
+    }
+
+    .sidebar-logo img {
+      max-width: 80%;
+      max-height: 88px;
+      filter: drop-shadow(0 0 14px rgba(255,255,255,0.25));
+      object-fit: contain;
+    }
+
+    .sidebar-menu {
+      flex: 1;
+      padding: 1.4rem 1rem;
+    }
+
+    .sidebar-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 1.7rem;
+      margin: 0.5rem 0.8rem;
+      border-radius: 14px;
+      color: #d8d8ff;
+      text-decoration: none;
+      font-size: 0.97rem;
+      font-weight: 500;
+      background: rgba(25, 25, 38, 0.45);
+      border: 1px solid rgba(200,200,240,0.08);
+      transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .sidebar-item::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent);
+      transform: translateX(-130%);
+      transition: transform 0.75s ease;
+    }
+
+    .sidebar-item:hover::before {
+      transform: translateX(130%);
+    }
+
+    .sidebar-item:hover {
+      color: #fff;
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(255,255,255,0.1);
+      border-color: rgba(200,200,240,0.28);
+      background: rgba(35, 35, 50, 0.6);
+    }
+
+    .sidebar-item .arrow {
+      font-size: 0.9rem;
+      opacity: 0.6;
+    }
+
+    /* Main content */
+    .main-content {
+      margin-left: 320px;
+      padding: 3rem 3.5rem 10rem;
+      flex: 1;
+    }
+
+    .modules-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 2.5rem;
+      max-width: 1680px;
+      margin: 0 auto;
+    }
+
+    /* Card styles - unchanged (subtle hover) */
+    .module-card {
+      height: 500px;
+      border-radius: 20px;
+      overflow: hidden;
+      border: 1px solid rgba(200,200,240,0.07);
+      box-shadow: 0 16px 60px rgba(0,0,0,0.82);
+      transition: 
+        transform 0.55s cubic-bezier(0.34, 1.56, 0.64, 1),
+        box-shadow 0.65s ease,
+        border-color 0.4s ease;
+      cursor: pointer;
+      background: #0a0a0f;
+      position: relative;
+    }
+
+    .module-card:hover {
+      transform: translateY(-12px) scale(1.022);
+      box-shadow: 
+        0 40px 100px rgba(255,255,255,0.06),
+        0 0 0 1.5px rgba(200,200,240,0.15) inset;
+      border-color: rgba(200,200,240,0.26);
+    }
+
+    .module-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 20px;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.6s ease;
+      box-shadow: inset 0 0 50px 12px rgba(180,180,255,0.06);
+      background: radial-gradient(circle at 50% 15%, rgba(220,220,255,0.05) 0%, transparent 65%);
+    }
+
+    .module-card:hover::after {
+      opacity: 1;
+    }
+
+    .module-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.9s cubic-bezier(0.215, 0.61, 0.355, 1);
+    }
+
+    .module-card:hover img {
+      transform: scale(1.05);
+    }
+
+    /* Footer */
+    footer {
+      position: fixed;
+      bottom: 1.2rem;
+      left: 320px;
+      right: 0;
+      text-align: center;
+      color: rgba(200, 200, 220, 0.38);
+      font-size: 0.8rem;
+      pointer-events: none;
+      z-index: 900;
+    }
+
+    footer:hover {
+      color: rgba(220, 220, 240, 0.65);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="particles">
+    <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+    <div class="particle"></div><div class="particle"></div>
+    <!-- add your full particle list here -->
+  </div>
+
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">
+        <img src="ChatGPT Image Feb 10, 2026, 10_18_07 PM.png" alt="VB Logo">
+      </div>
+    </div>
+
+    <div class="sidebar-menu">
+      <a href="home.html" class="sidebar-item">Home</a>
+      <a href="index.html" class="sidebar-item">Products</a>
+      <a href="Status.html" class="sidebar-item">Status</a>
+    </div>
+  </div>
+
+  <div class="main-content">
+    <div class="modules-grid">
+<div class="module-card">
+  <a href="Prodcut1.html" target="_blank">
+    <img src="https://image2url.com/r2/default/images/1772413811194-5e368d7b-f9f2-44a9-92b3-6bb74c7a1f8c.png" alt="Fortnite Private">
+  </a>
+</div>
+<div class="module-card">
+  <a href="https://example.com/hwid-spoofer" target="_blank">
+    <img src="https://image2url.com/r2/default/images/1772414149338-bda78ef0-6a22-4570-9c3e-bc567a740ef4.png" alt="HWID Spoofer">
+  </a>
+</div>
+
+<div class="module-card">
+  <a href="product2.html" target="_blank">
+    <img src="https://image2url.com/r2/default/images/1772415218524-3bd75cb9-6a76-456e-bc97-a4057cdccd7b.png" alt="Cs2 Private">
+  </a>
+</div>
+      <div class="module-card"><img src="https://image2url.com/r2/default/images/1772415462034-8392b817-8dc1-489c-8769-7b6254349a30.png" alt="Comming soon"></div>
+      <div class="module-card"><img src="https://image2url.com/r2/default/images/1772415462034-8392b817-8dc1-489c-8769-7b6254349a30.png" alt="Comming soon"></div>
+      <div class="module-card"><img src="https://image2url.com/r2/default/images/1772415462034-8392b817-8dc1-489c-8769-7b6254349a30.png" alt="Apex Legends"></div>
+      <div class="module-card"><img src="https://image2url.com/r2/default/images/1772415462034-8392b817-8dc1-489c-8769-7b6254349a30.png" alt="Comming soon"></div>
+      <div class="module-card"><img src="https://image2url.com/r2/default/images/1772415462034-8392b817-8dc1-489c-8769-7b6254349a30.png" alt="Comming soon"></div>
+
+    </div>
+  </div>
+
+  <footer>
+    © 2026 Engine6.0. All Rights Reserved.
+  </footer>
+
+</body>
+</html>

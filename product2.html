@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Engine6.0 - Purchase</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;}
+body{
+  background:#000;
+  color:#f0f0f0;
+  font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+  min-height:100vh;
+  display:flex;
+  overflow-x:hidden;
+}
+
+/* GRID BACKGROUND */
+body::before{
+  content:'';
+  position:fixed;
+  inset:0;
+  z-index:-1;
+  background-image:
+    linear-gradient(rgba(200,200,240,0.26) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(200,200,240,0.26) 1px, transparent 1px);
+  background-size:60px 60px;
+  opacity:0.65;
+}
+
+/* SIDEBAR */
+.sidebar{
+  position:fixed;
+  left:32px;
+  top:20px;
+  bottom:20px;
+  width:260px;
+  background:rgba(8,8,14,0.88);
+  border-radius:22px;
+  border:1px solid rgba(200,200,240,0.1);
+  box-shadow:0 20px 70px rgba(0,0,0,0.85);
+  backdrop-filter:blur(18px);
+  padding:2rem 1.4rem;
+}
+.sidebar a{
+  display:block;
+  margin-bottom:1rem;
+  padding:0.9rem 1.2rem;
+  border-radius:12px;
+  text-decoration:none;
+  color:#d8d8ff;
+  background:rgba(25,25,38,0.45);
+  border:1px solid rgba(200,200,240,0.08);
+  transition:.3s;
+}
+.sidebar a:hover{transform:translateY(-3px); color:#fff;}
+
+/* MAIN */
+.main{
+  margin-left:320px;
+  padding:4rem;
+  width:100%;
+}
+.container{
+  max-width:1400px;
+  margin:auto;
+  display:grid;
+  grid-template-columns:1fr 1.1fr;
+  gap:4rem;
+}
+
+/* IMAGE */
+.product-img{
+  border-radius:20px;
+  overflow:hidden;
+  box-shadow:0 30px 80px rgba(0,0,0,0.9);
+}
+.product-img img{
+  width:100%;
+  height:420px;
+  object-fit:cover;
+}
+
+/* FEATURES */
+.features{
+  margin-top:2rem;
+  background:rgba(18,18,30,0.9);
+  border:1px solid rgba(200,200,240,0.15);
+  border-radius:18px;
+  padding:2rem;
+}
+.features li{
+  list-style:none;
+  margin-bottom:0.8rem;
+  color:#cfd3ff;
+}
+
+/* RIGHT SIDE */
+h1{
+  font-size:2.4rem;
+  margin-bottom:2rem;
+}
+.plan{
+  display:flex;
+  justify-content:space-between;
+  padding:1rem;
+  margin-bottom:1rem;
+  border-radius:12px;
+  background:rgba(25,25,40,0.6);
+  border:1px solid rgba(200,200,240,0.08);
+  cursor:pointer;
+  transition:.3s;
+}
+.plan:hover{background:rgba(35,35,60,0.8);}
+.plan.active{
+  background:rgba(100,100,200,0.35);
+  border:1px solid rgba(160,160,255,0.7);
+  box-shadow:0 0 20px rgba(140,140,255,0.4);
+}
+
+/* BUTTON */
+.btn{
+  width:100%;
+  padding:1rem;
+  margin-top:1rem;
+  border:none;
+  border-radius:12px;
+  background:linear-gradient(90deg,#6c6cff,#8f8fff);
+  color:#fff;
+  font-weight:600;
+  cursor:pointer;
+  transition:.3s;
+}
+.btn:hover{transform:scale(1.03);}
+
+/* CHECKOUT */
+.checkout{
+  margin-top:2rem;
+  display:none;
+  background:rgba(18,18,30,0.95);
+  border:1px solid rgba(200,200,240,0.15);
+  border-radius:18px;
+  padding:2rem;
+}
+
+/* PAYMENT METHODS */
+.payment-methods{
+  display:flex;
+  flex-direction:column;
+  gap:0.8rem;
+}
+.payment{
+  display:flex;
+  align-items:center;
+  padding:0.9rem 1rem;
+  border-radius:12px;
+  font-weight:600;
+  cursor:pointer;
+  transition:all 0.3s ease;
+  border:2px solid transparent;
+  background:rgba(25,25,40,0.6);
+}
+.payment img{
+  width:36px;
+  height:36px;
+  margin-right:12px;
+  object-fit:contain;
+  transition: transform 0.3s ease;
+}
+.payment:hover{
+  transform:translateY(-2px);
+  box-shadow:0 4px 20px rgba(255,255,255,0.2);
+}
+.payment:hover img{transform:scale(1.15);}
+.payment.active{
+  border:2px solid white;
+  box-shadow:0 0 25px rgba(255,255,255,0.35);
+}
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+  <a href="home.html">Home</a>
+  <a href="index.html">Products</a>
+  <a href="Status.html">Status</a>
+</div>
+
+<div class="main">
+<div class="container">
+
+<!-- LEFT -->
+<div>
+  <div class="product-img">
+    <img src="https://image2url.com/r2/default/images/1772415218524-3bd75cb9-6a76-456e-bc97-a4057cdccd7b.png" alt="Product">
+  </div>
+  <div class="features">
+    <ul>
+      <li>has Aimbot smoothing and perdiction has sum rage features like auto wall has trigger bot</li>
+      <li>**Weapon ESP**  
+**Grenade Prediction**  
+**Stream Proof**  
+
+Fully customizable per-weapon configs — for example, enable aimbot on assault rifles but disable it on pistols.  
+
+Massive ESP configuration system including:  
+- Gradient colors  
+- Skeleton ESP  
+- Highly detailed u can change visable non vis aimbot has vis check and has head only u can also check this discord to see a  pic of the menu</li>
+      <li>Automatic Updates</li>
+      <li>Undetected on Val</li>
+      <li>Premium Support</li>
+    </ul>
+  </div>
+</div>
+
+<!-- RIGHT -->
+<div>
+  <h1>Engine6.0 Cs2 Private</h1>
+
+  <div class="plan" data-price="3.00" data-name="24 hour key">
+    <span>1 day</span><span>$3.00</span>
+  </div>
+  <div class="plan" data-price="12.00" data-name="7 day key">
+    <span>1 week</span><span>$12.00</span>
+  </div>
+  <div class="plan" data-price="21.00" data-name="1 month key">
+    <span>30 days</span><span>$21.00</span>
+      </div>
+  <div class="plan" data-price="180.00" data-name="Life time key">
+    <span>Lifetime</span><span>$180.00</span>
+    
+  </div>
+
+  <button class="btn" onclick="showCheckout()">Proceed to Checkout</button>
+
+  <div class="checkout" id="checkout">
+    <h3 id="summaryPlan"></h3>
+    <p id="summaryPrice"></p>
+
+    <h4 style="margin:1.5rem 0 1rem;">Payment Method</h4>
+    <div class="payment-methods">
+      <div class="payment card" data-method="card">
+        <img src="https://image2url.com/r2/default/images/1772457948779-c2fa77c2-43c4-49e0-a41c-687c6de2be50.png" alt="Card Logo">
+        <span>Credit / Debit Card</span>
+      </div>
+      <div class="payment paypal" data-method="paypal">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal Logo">
+        <span>PayPal</span>
+      </div>
+      <div class="payment cashapp" data-method="cashapp">
+        <img src="https://image2url.com/r2/default/images/1772457907519-7b645b0f-d559-4407-b468-ad34b793f41e.png" alt="Cash App Logo">
+        <span>Cash App</span>
+      </div>
+      <div class="payment crypto" data-method="crypto">
+        <img src="https://cryptologos.cc/logos/bitcoin-btc-logo.png?v=024" alt="Crypto Logo">
+        <span>Crypto (BTC / LTC)</span>
+      </div>
+    </div>
+
+    <button class="btn" id="checkoutBtn">Complete Secure Payment</button>
+  </div>
+
+</div>
+</div>
+</div>
+
+<script>
+// PLAN SELECTION
+let selectedPlan=null;
+document.querySelectorAll('.plan').forEach(plan=>{
+  plan.addEventListener('click',()=>{
+    document.querySelectorAll('.plan').forEach(p=>p.classList.remove('active'));
+    plan.classList.add('active');
+    selectedPlan=plan;
+  });
+});
+
+// PAYMENT SELECTION
+document.querySelectorAll('.payment').forEach(method=>{
+  method.addEventListener('click',()=>{
+    document.querySelectorAll('.payment').forEach(m=>m.classList.remove('active'));
+    method.classList.add('active');
+  });
+});
+
+// SHOW CHECKOUT
+function showCheckout(){
+  if(!selectedPlan){alert("Please select a plan."); return;}
+  document.getElementById("summaryPlan").innerText = selectedPlan.dataset.name;
+  document.getElementById("summaryPrice").innerText = "Total: $"+selectedPlan.dataset.price;
+  document.getElementById("checkout").style.display="block";
+}
+
+// PAYMENT LINKS
+const paymentLinks = {
+  card: "https://yourwebsite.com/card-checkout",
+  paypal: "https://www.paypal.com/checkout",
+  cashapp: "https://cash.app/pay/yourlink",
+  crypto: "https://yourcryptoexchange.com/checkout"
+};
+
+// BUY BUTTON REDIRECT
+document.getElementById("checkoutBtn").addEventListener("click", ()=>{
+  const selectedPayment = document.querySelector(".payment.active");
+  if(!selectedPayment){alert("Please select a payment method."); return;}
+  const method = selectedPayment.dataset.method;
+  const link = paymentLinks[method];
+  if(link){ window.location.href = link; }
+  else{ alert("Payment method URL not configured."); }
+});
+</script>
+
+</body>
+</html>

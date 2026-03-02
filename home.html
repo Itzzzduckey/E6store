@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Engine6.0 - Premium Gaming Modules</title>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    html, body { height:100%; }
+    body {
+      background:#000; color:#f0f0f0;
+      font-family:'Segoe UI', system-ui, sans-serif;
+      min-height:100vh; display:flex; flex-direction:column; overflow-x:hidden;
+    }
+    body::before {
+      content:''; position:fixed; inset:0; z-index:-2;
+      background-image: linear-gradient(rgba(200,200,240,0.26) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(200,200,240,0.26) 1px, transparent 1px);
+      background-size:60px 60px; opacity:0.65;
+    }
+    .particles { position:fixed; inset:0; pointer-events:none; z-index:-1; }
+    .particle {
+      position:absolute; background:radial-gradient(circle at 40% 40%, #ffffff 0%, rgba(240,240,255,0.45) 50%, transparent 75%);
+      border-radius:50%; box-shadow:0 0 18px rgba(255,255,255,0.5), inset 0 0 8px rgba(255,255,255,0.4);
+      animation:float linear infinite; opacity:0.3;
+    }
+    @keyframes float { 0% { transform:translate(0,0) scale(1); } 50% { transform:translate(var(--dx), var(--dy)) scale(1.15); } 100% { transform:translate(var(--dx2), var(--dy2)) scale(1); } }
+    /* Add your particle nth-child styles here */
+
+    .sidebar {
+      position:fixed; left:32px; top:20px; bottom:20px; width:260px;
+      background:rgba(8,8,14,0.88); border-radius:22px; border:1px solid rgba(200,200,240,0.1);
+      box-shadow:0 20px 70px rgba(0,0,0,0.85); backdrop-filter:blur(18px); z-index:1000;
+      display:flex; flex-direction:column;
+    }
+    .sidebar-header { padding:2rem 1.4rem 1.6rem; text-align:center; border-bottom:1px solid rgba(200,200,240,0.06); }
+    .sidebar-logo img { max-width:80%; max-height:88px; filter:drop-shadow(0 0 14px rgba(255,255,255,0.25)); object-fit:contain; }
+    .sidebar-menu { flex:1; padding:1.4rem 1rem; }
+    .sidebar-item {
+      display:flex; align-items:center; justify-content:space-between; padding:1rem 1.7rem; margin:0.5rem 0.8rem;
+      border-radius:14px; color:#d8d8ff; text-decoration:none; font-size:0.97rem; font-weight:500;
+      background:rgba(25,25,38,0.45); border:1px solid rgba(200,200,240,0.08);
+      transition:all 0.4s cubic-bezier(0.23,1,0.32,1); position:relative; overflow:hidden;
+    }
+    .sidebar-item:hover {
+      color:#fff; transform:translateY(-3px); box-shadow:0 10px 30px rgba(255,255,255,0.1);
+      border-color:rgba(200,200,240,0.28); background:rgba(35,35,50,0.6);
+    }
+    .sidebar-item.active { background:rgba(50,50,70,0.6); border-color:rgba(200,200,240,0.28); color:#fff; }
+
+    .main-content { margin-left:320px; padding:3rem 3.5rem 10rem; flex:1; text-align:center; }
+
+    .hero {
+      margin:4rem 0 6rem;
+      display:flex; flex-direction:column; align-items:center; gap:2rem;
+    }
+    .hero-logo {
+      max-width:420px; filter:drop-shadow(0 0 40px rgba(200,200,255,0.4));
+      animation:logoGlow 6s ease-in-out infinite alternate;
+    }
+    @keyframes logoGlow { 0% { filter:drop-shadow(0 0 40px rgba(200,200,255,0.4)); } 100% { filter:drop-shadow(0 0 70px rgba(200,200,255,0.7)); } }
+    .hero-title { font-size:3.2rem; font-weight:700; color:#fff; text-shadow:0 0 20px rgba(150,150,255,0.5); }
+    .hero-subtitle { font-size:1.3rem; color:rgba(220,220,255,0.8); max-width:700px; margin:0 auto; }
+
+    .panels-grid {
+      display:grid; grid-template-columns:repeat(auto-fit, minmax(420px, 1fr)); gap:2.5rem;
+      max-width:1400px; margin:0 auto;
+    }
+    .panel {
+      background:rgba(8,8,14,0.88); border-radius:22px; border:1px solid rgba(200,200,240,0.1);
+      box-shadow:0 20px 70px rgba(0,0,0,0.85); backdrop-filter:blur(18px);
+      padding:2.5rem; text-align:left; transition:all 0.4s ease;
+    }
+    .panel:hover { transform:translateY(-10px); box-shadow:0 35px 100px rgba(100,100,255,0.15); border-color:rgba(200,200,240,0.3); }
+    .panel h2 { font-size:1.8rem; color:#fff; margin-bottom:1.2rem; border-bottom:1px solid rgba(200,200,240,0.15); padding-bottom:0.8rem; }
+    .panel p, .panel ul { font-size:1.05rem; line-height:1.7; color:rgba(220,220,255,0.85); }
+    .panel ul { list-style:none; padding-left:0; }
+    .panel li { margin-bottom:0.8rem; position:relative; padding-left:1.8rem; }
+    .panel li::before { content:"→"; position:absolute; left:0; color:#a0a0ff; }
+
+    .discord-panel { text-align:center; }
+    .discord-invite {
+      display:inline-block; margin:1.5rem 0; padding:1rem 2.5rem;
+      background:linear-gradient(135deg, #5865F2, #7289DA); color:#fff;
+      font-size:1.3rem; font-weight:600; border-radius:12px; text-decoration:none;
+      transition:all 0.3s; box-shadow:0 8px 30px rgba(88,101,242,0.4);
+    }
+    .discord-invite:hover { transform:scale(1.08); box-shadow:0 15px 40px rgba(88,101,242,0.6); }
+    .discord-stats { margin-top:1.5rem; font-size:1.1rem; color:rgba(200,200,240,0.8); }
+    .discord-stats strong { color:#fff; }
+
+    footer { position:fixed; bottom:1.2rem; left:320px; right:0; text-align:center; color:rgba(200,200,220,0.38); font-size:0.8rem; pointer-events:none; z-index:900; }
+    footer:hover { color:rgba(220,220,240,0.65); }
+  </style>
+</head>
+<body>
+
+  <div class="particles">
+    <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+    <div class="particle"></div><div class="particle"></div>
+    <!-- add your full particle list here -->
+  </div>
+
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo"><img src="ChatGPT Image Feb 10, 2026, 10_18_07 PM.png" alt="VB Logo"></div>
+    </div>
+    <div class="sidebar-menu">
+      <a href="home.html" class="sidebar-item active">Home</a>
+      <a href="index.html" class="sidebar-item">Products</a>
+      <a href="Status.html" class="sidebar-item">Status</a>
+    </div>
+  </div>
+
+  <div class="main-content">
+    <section class="hero">
+      <img src="ChatGPT Image Feb 10, 2026, 10_18_07 PM.png" alt="Engine6.0 Logo" class="hero-logo">
+      <h1 class="hero-title">Engine6.0</h1>
+      <p class="hero-subtitle">Premium undetected Cheats • Built for winners • Trusted since 2024</p>
+    </section>
+
+    <div class="panels-grid">
+      <!-- About Us Panel -->
+      <div class="panel">
+        <h2>About Us</h2>
+        <p>Engine6.0 is a premium provider of high-quality, undetected gaming solutions for serious players. We specialize in private cheats, HWID spoofers, and custom tools for the most popular titles including Fortnite, CS2, and more.</p>
+        <p>Our focus is simple: security, stability, and performance. Every Cheat is hand-crafted, rigorously tested, and updated daily to stay ahead of anti-cheat systems. Join thousands of satisfied users who trust Engine6.0 to give them the edge.</p>
+        <ul>
+          <li>Undetected since launch</li>
+          <li>Fast & reliable support</li>
+          <li>Daily updates & hotfixes</li>
+          <li>Private, secure community</li>
+        </ul>
+      </div>
+
+      <!-- Owner Panel -->
+      <div class="panel">
+        <h2>The Owner</h2>
+        <p><strong>Itzzzduckey</strong> — Founder & Lead Developer</p>
+        <p></p>
+      </div>
+
+      <!-- Discord Panel -->
+      <div class="panel discord-panel">
+        <h2>Join Our Discord</h2>
+        <p>Our official Discord is the best place for updates, support, giveaways, daily roulette, and talking to other members.</p>
+        <a href="https://discord.gg/92FpDz8mnE" target="_blank" class="discord-invite">Join Discord Now</a>
+        <div class="discord-stats">
+          <p><strong>Online now:</strong> <span id="online-count">52</span> / <strong>Total members:</strong> 687</p>
+          <p> • Instant support</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>© 2026 Engine6.0. All Rights Reserved.</footer>
+
+  <script>
+    // Fake online count animation (replace with real Discord widget later)
+    function updateOnlineCount() {
+      const count = document.getElementById('online-count');
+      let num = parseInt(count.textContent);
+      num = Math.floor(200 + Math.random() * 120);
+      count.textContent = num;
+    }
+    setInterval(updateOnlineCount, 12000);
+    updateOnlineCount();
+  </script>
+
+</body>
+</html>
