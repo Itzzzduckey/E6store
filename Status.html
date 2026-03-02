@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Engine6.0 - Status</title>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    html, body { height:100%; }
+    body {
+      background:#000; color:#f0f0f0;
+      font-family:'Segoe UI', system-ui, sans-serif;
+      min-height:100vh; display:flex; flex-direction:column; overflow-x:hidden;
+    }
+    body::before {
+      content:''; position:fixed; inset:0; z-index:-2;
+      background-image: linear-gradient(rgba(200,200,240,0.26) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(200,200,240,0.26) 1px, transparent 1px);
+      background-size:60px 60px; opacity:0.65;
+    }
+    .particles { position:fixed; inset:0; pointer-events:none; z-index:-1; }
+    .particle {
+      position:absolute; background:radial-gradient(circle at 40% 40%, #ffffff 0%, rgba(240,240,255,0.45) 50%, transparent 75%);
+      border-radius:50%; box-shadow:0 0 18px rgba(255,255,255,0.5), inset 0 0 8px rgba(255,255,255,0.4);
+      animation:float linear infinite; opacity:0.3;
+    }
+    @keyframes float { 0% { transform:translate(0,0) scale(1); } 50% { transform:translate(var(--dx), var(--dy)) scale(1.15); } 100% { transform:translate(var(--dx2), var(--dy2)) scale(1); } }
+    /* Add your particle nth-child positions here as before */
+
+    .sidebar {
+      position:fixed; left:32px; top:20px; bottom:20px; width:260px;
+      background:rgba(8,8,14,0.88); border-radius:22px; border:1px solid rgba(200,200,240,0.1);
+      box-shadow:0 20px 70px rgba(0,0,0,0.85); backdrop-filter:blur(18px); z-index:1000;
+      display:flex; flex-direction:column;
+    }
+    .sidebar-header { padding:2rem 1.4rem 1.6rem; text-align:center; border-bottom:1px solid rgba(200,200,240,0.06); }
+    .sidebar-logo img { max-width:80%; max-height:88px; filter:drop-shadow(0 0 14px rgba(255,255,255,0.25)); object-fit:contain; }
+    .sidebar-menu { flex:1; padding:1.4rem 1rem; }
+    .sidebar-item {
+      display:flex; align-items:center; justify-content:space-between; padding:1rem 1.7rem; margin:0.5rem 0.8rem;
+      border-radius:14px; color:#d8d8ff; text-decoration:none; font-size:0.97rem; font-weight:500;
+      background:rgba(25,25,38,0.45); border:1px solid rgba(200,200,240,0.08);
+      transition:all 0.4s cubic-bezier(0.23,1,0.32,1); position:relative; overflow:hidden;
+    }
+    .sidebar-item:hover {
+      color:#fff; transform:translateY(-3px); box-shadow:0 10px 30px rgba(255,255,255,0.1);
+      border-color:rgba(200,200,240,0.28); background:rgba(35,35,50,0.6);
+    }
+    .sidebar-item.active { background:rgba(50,50,70,0.6); border-color:rgba(200,200,240,0.28); color:#fff; }
+
+    .main-content { margin-left:320px; padding:3rem 3.5rem 10rem; flex:1; }
+    .status-header { text-align:center; margin-bottom:3rem; font-size:2.6rem; color:#fff; text-shadow:0 0 15px rgba(100,100,255,0.4); }
+
+    .status-grid {
+      display:grid; grid-template-columns:repeat(auto-fit, minmax(380px, 1fr)); gap:2rem;
+      max-width:1680px; margin:0 auto;
+    }
+    .status-card {
+      background:rgba(10,10,15,0.92); border-radius:20px; border:1px solid rgba(200,200,240,0.08);
+      box-shadow:0 16px 60px rgba(0,0,0,0.82); padding:2rem; transition:all 0.4s ease;
+      position:relative; overflow:hidden;
+    }
+    .status-card:hover {
+      transform:translateY(-8px); box-shadow:0 30px 80px rgba(100,100,255,0.12), inset 0 0 0 1.5px rgba(200,200,240,0.2);
+      border-color:rgba(200,200,240,0.3);
+    }
+    .status-header-row { display:flex; align-items:center; justify-content:space-between; margin-bottom:1.2rem; }
+    .service-name { font-size:1.5rem; font-weight:600; color:#fff; }
+    .status-indicator {
+      display:flex; align-items:center; gap:0.8rem; font-size:1rem; font-weight:500;
+    }
+    .dot {
+      width:14px; height:14px; border-radius:50%; animation:pulse 2s infinite;
+      box-shadow:0 0 12px currentColor;
+    }
+    @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.4; } }
+    .online { color:#00ff9d; } .online .dot { background:#00ff9d; }
+    .offline { color:#ff4d4d; } .offline .dot { background:#ff4d4d; animation:none; }
+    .details { display:grid; grid-template-columns:1fr 1fr; gap:1rem; font-size:0.95rem; }
+    .detail-item { background:rgba(25,25,38,0.4); padding:0.8rem; border-radius:10px; text-align:center; }
+    .detail-label { color:rgba(200,200,240,0.7); font-size:0.85rem; margin-bottom:0.3rem; }
+    .detail-value { font-weight:600; }
+    .uptime-good { color:#00ff9d; } .uptime-warning { color:#ffcc00; } .uptime-bad { color:#ff4d4d; }
+    .latency-good { color:#00ff9d; } .latency-warning { color:#ffcc00; } .latency-bad { color:#ff4d4d; }
+
+    footer { position:fixed; bottom:1.2rem; left:320px; right:0; text-align:center; color:rgba(200,200,220,0.38); font-size:0.8rem; pointer-events:none; z-index:900; }
+    footer:hover { color:rgba(220,220,240,0.65); }
+  </style>
+</head>
+<body>
+
+  <div class="particles">
+    <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+    <div class="particle"></div><div class="particle"></div>
+    <!-- add your full particle list here -->
+  </div>
+
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo"><img src="ChatGPT Image Feb 10, 2026, 10_18_07 PM.png" alt="VB Logo"></div>
+    </div>
+    <div class="sidebar-menu">
+      <a href="home.html" class="sidebar-item">Home</a>
+      <a href="index.html" class="sidebar-item">Products</a>
+      <a href="Status.html" class="sidebar-item active">Status</a>
+    </div>
+  </div>
+
+  <div class="main-content">
+    <h1 class="status-header">System Status - Live</h1>
+
+    <div id="status-grid" class="status-grid">
+     
+    </div>
+  </div>
+
+  <footer>© 2026 Engine6.0. All Rights Reserved. | Last updated: <span id="last-updated">Just now</span></footer>
+
+  <script>
+    
+    const services = [
+      { name: "Fortnite Private", status: "online", uptime: 99.92, latency: 85, lastCheck: new Date() },
+      { name: "CS2 Private", status: "online", uptime: 99.85, latency: 120, lastCheck: new Date() },
+      { name: "HWID Spoofer", status: "offline", uptime: 99.95, latency: 45, lastCheck: new Date() },
+    ];
+
+    const grid = document.getElementById('status-grid');
+    const lastUpdated = document.getElementById('last-updated');
+
+    function renderStatus() {
+      grid.innerHTML = '';
+      services.forEach(svc => {
+        const card = document.createElement('div');
+        card.classList.add('status-card');
+
+        const isOnline = svc.status === 'online';
+        const uptimeClass = svc.uptime >= 99.9 ? 'uptime-good' : svc.uptime >= 99 ? 'uptime-warning' : 'uptime-bad';
+        const latencyClass = !isOnline ? '' : svc.latency < 200 ? 'latency-good' : svc.latency < 500 ? 'latency-warning' : 'latency-bad';
+
+        card.innerHTML = `
+          <div class="status-header-row">
+            <div class="service-name">${svc.name}</div>
+            <div class="status-indicator ${isOnline ? 'online' : 'offline'}">
+              <div class="dot"></div>
+              ${isOnline ? 'Online' : 'Offline'}
+            </div>
+          </div>
+          <div class="details">
+            <div class="detail-item">
+              <div class="detail-label">Uptime</div>
+              <div class="detail-value ${uptimeClass}">${svc.uptime.toFixed(2)}%</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Latency</div>
+              <div class="detail-value ${latencyClass}">${isOnline ? svc.latency + ' ms' : 'N/A'}</div>
+            </div>
+            <div class="detail-item" style="grid-column: span 2;">
+              <div class="detail-label">Last Checked</div>
+              <div class="detail-value">${svc.lastCheck.toLocaleTimeString()}</div>
+            </div>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+
+      lastUpdated.textContent = new Date().toLocaleTimeString();
+    }
+
+    // Simulate live updates (random small changes every 8-15s)
+    function simulateUpdate() {
+      services.forEach(svc => {
+        // Random chance to flip status (rare)
+        if (Math.random() < 0.02) {
+          svc.status = svc.status === 'online' ? 'offline' : 'online';
+        }
+        // Slight uptime fluctuation
+        svc.uptime = Math.min(100, Math.max(98, svc.uptime + (Math.random() - 0.5) * 0.05));
+        // Random latency if online
+        if (svc.status === 'online') {
+          svc.latency = Math.floor(30 + Math.random() * 300);
+        }
+        svc.lastCheck = new Date();
+      });
+      renderStatus();
+    }
+
+    // Initial render + live simulation
+    renderStatus();
+    setInterval(simulateUpdate, 8000 + Math.random() * 7000);
+  </script>
+
+</body>
+</html>
